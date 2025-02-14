@@ -26,14 +26,15 @@ const Task7 = () => {
   const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
   const [taylorData, setTaylorData] = useState<any[]>([]);
 
-  // Function to compute Taylor series approximation
+  // Function to compute Taylor series approximation for dy/dx = y^2 + x^2
   const taylorSeries = (x0: number, y0: number, h: number) => {
-    let y1 = y0;
+    // Compute derivatives of the function dy/dx = y^2 + x^2
     let yPrime = y0 ** 2 + x0 ** 2;
     let yDoublePrime = 2 * y0 * yPrime + 2 * x0;
     let yTriplePrime = 2 * y0 * yDoublePrime + 2 * yPrime ** 2 + 2;
 
-    y1 += h * yPrime + (h ** 2 / 2) * yDoublePrime + (h ** 3 / 6) * yTriplePrime;
+    // Taylor series expansion: y(x) = y0 + h * y' + (h^2 / 2!) * y'' + (h^3 / 3!) * y'''
+    let y1 = y0 + h * yPrime + (h ** 2 / 2) * yDoublePrime + (h ** 3 / 6) * yTriplePrime;
 
     return y1;
   };
@@ -43,9 +44,9 @@ const Task7 = () => {
     const result = taylorSeries(xStart, yStart, xTarget - xStart);
     setEstimatedValue(result);
 
-    // Generate data for visualization
+    // Generate data for visualization (for y(0.1) and y(0.2))
     let data = [];
-    for (let i = 0; i <= xTarget; i += 0.01) {
+    for (let i = 0; i <= 0.2; i += 0.01) {
       data.push({ x: i, y: taylorSeries(xStart, yStart, i - xStart) });
     }
     setTaylorData(data);
@@ -58,7 +59,7 @@ const Task7 = () => {
       </Typography>
 
       {/* Math Formula */}
-      <BlockMath math="y(x) = y_0 + h f(x_0, y_0) + \frac{h^2}{2!} f'(x_0, y_0) + \frac{h^3}{3!} f''(x_0, y_0)" />
+      <BlockMath math="y(x) = y_0 + h \cdot y' + \frac{h^2}{2!} \cdot y'' + \frac{h^3}{3!} \cdot y'''" />
 
       {/* Initial Conditions */}
       <Typography variant="h6" sx={{ mt: 3 }}>

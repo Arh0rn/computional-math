@@ -20,37 +20,39 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task8 = () => {
-  const [a, setA] = useState(0);
-  const [b, setB] = useState(1);
-  const [n, setN] = useState(4);
+  const [a, setA] = useState(2);  // Lower limit of integration
+  const [b, setB] = useState(5);  // Upper limit of integration
+  const [n, setN] = useState(6);  // Number of subintervals
   const [approxIntegral, setApproxIntegral] = useState<number | null>(null);
   const [exactIntegral, setExactIntegral] = useState<number | null>(null);
   const [error, setError] = useState<number | null>(null);
   const [plotData, setPlotData] = useState<any[]>([]);
 
-  // Function to compute f(x) = x^2 + x
-  const f = (x: number) => x ** 2 + x;
+  // Function to compute f(x) = 2x^3
+  const f = (x: number) => 2 * x ** 3;
 
   // Function to compute exact integral using symbolic integration
   const computeExactIntegral = (a: number, b: number) => {
-    return (b ** 3) / 3 + (b ** 2) / 2 - ((a ** 3) / 3 + (a ** 2) / 2);
+    return (2 / 4) * (b ** 4 - a ** 4);  // Integral of 2x^3 is x^4
   };
 
-  // Function to apply the Trapezoidal Rule
-  const trapezoidalRule = (a: number, b: number, n: number) => {
+  // Function to apply Simpson’s 3/8 Rule
+  const simpsons38Rule = (a: number, b: number, n: number) => {
     const h = (b - a) / n;
     let sum = f(a) + f(b);
-
     for (let i = 1; i < n; i++) {
-      sum += 2 * f(a + i * h);
+      if (i % 3 === 0) {
+        sum += 2 * f(a + i * h);  // For every 3rd term, multiply by 2
+      } else {
+        sum += 3 * f(a + i * h);  // Multiply other terms by 3
+      }
     }
-
-    return (h / 2) * sum;
+    return (3 * h / 8) * sum;  // Apply the 3/8 factor
   };
 
   // Handle Calculation
   const handleCalculate = () => {
-    const approxValue = trapezoidalRule(a, b, n);
+    const approxValue = simpsons38Rule(a, b, n);
     const exactValue = computeExactIntegral(a, b);
     const errorValue = Math.abs(approxValue - exactValue);
 
@@ -58,11 +60,10 @@ const Task8 = () => {
     setExactIntegral(exactValue);
     setError(errorValue);
 
-    // Generate plot data
+    // Generate plot data for visualization
     let data = [];
-    for (let i = 0; i <= n; i++) {
-      const x = a + (i * (b - a)) / n;
-      data.push({ x, y: f(x) });
+    for (let i = a; i <= b; i += (b - a) / n) {
+      data.push({ x: i, y: f(i) });
     }
     setPlotData(data);
   };
@@ -70,11 +71,11 @@ const Task8 = () => {
   return (
     <Box>
       <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-        Task 8: Trapezoidal Rule
+        Task 8: Simpson’s 3/8 Rule
       </Typography>
 
       {/* Math Formula */}
-      <BlockMath math="\int_0^1 (x^2 + x)dx \approx \frac{h}{2} \left[ f(a) + 2 \sum f(x_i) + f(b) \right]" />
+      <BlockMath math="\int_2^5 2x^3 \, dx \approx \frac{3h}{8} \left[ f(a) + 3 \sum f(x_i) + 3 \sum f(x_j) + f(b) \right]" />
 
       {/* Input Fields */}
       <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
@@ -127,7 +128,7 @@ const Task8 = () => {
       {/* Graph Visualization */}
       {plotData.length > 0 && (
         <Box sx={{ mt: 6 }}>
-          <Typography variant="h6">Function & Trapezoidal Approximation</Typography>
+          <Typography variant="h6">Function & Simpson's 3/8 Approximation</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <AreaChart data={plotData}>
               <CartesianGrid strokeDasharray="3 3" />

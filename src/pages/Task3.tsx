@@ -14,14 +14,14 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task3 = () => {
-  // Default system of equations
+  // System of equations: 3x + y - z = 1, 2x - 8y + z = -2, -x + y + 5z = 3
   const [A, setA] = useState([
-    [1, 1, 1],
-    [0, 2, 5],
-    [2, 3, 1],
+    [3, 1, -1],
+    [2, -8, 1],
+    [-1, 1, 5],
   ]);
-  const [B, setB] = useState([6, -4, 27]);
-  const [initialGuess, setInitialGuess] = useState([0, 0, 0]);
+  const [B, setB] = useState([1, -2, 3]);
+  const [initialGuess, setInitialGuess] = useState([0, 0, 0]); // Start with x0 = [0, 0, 0]
   const [solution, setSolution] = useState<number[] | null>(null);
   const [iterations, setIterations] = useState<number | null>(null);
   const [convergenceData, setConvergenceData] = useState<any[]>([]);
@@ -74,7 +74,7 @@ const Task3 = () => {
       </Typography>
 
       {/* Math Formula Display */}
-      <BlockMath math="\begin{cases} x + y + z = 6 \\ 0y + 2z = -4 \\ 2x + 3y + z = 27 \end{cases}" />
+      <BlockMath math="\begin{cases} 3x + y - z = 1 \\ 2x - 8y + z = -2 \\ -x + y + 5z = 3 \end{cases}" />
 
       {/* Coefficient Matrix Input */}
       <Typography variant="h6" sx={{ mt: 3 }}>Coefficient Matrix (A)</Typography>

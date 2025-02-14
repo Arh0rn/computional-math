@@ -20,64 +20,47 @@ import { BlockMath } from "react-katex";
 import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task6 = () => {
-  // Default Data Points
+  // Updated data points as per the new problem statement
   const [points, setPoints] = useState([
     { x: 0, y: 1 },
-    { x: 1, y: 4 },
-    { x: 2, y: 9 },
-    { x: 3, y: 16 },
+    { x: 1, y: 3 },
+    { x: 2, y: 7 },
   ]);
-  const [xTarget, setXTarget] = useState(1.5);
+  const [xTarget, setXTarget] = useState(1);
   const [estimatedValue, setEstimatedValue] = useState<number | null>(null);
-  const [differenceTable, setDifferenceTable] = useState<number[][] | null>(null);
 
-  // Function to generate forward difference table
-  const generateDifferenceTable = (data: { x: number; y: number }[]) => {
+  // Function to calculate first derivative using Newton’s Forward Difference Formula
+  const newtonForwardDifference = (data: { x: number; y: number }[], xTarget: number) => {
     const n = data.length;
-    let table = Array.from({ length: n }, (_, i) => [data[i].y]);
+    const h = data[1].x - data[0].x; // Assuming equally spaced data
+    const p = (xTarget - data[0].x) / h; // Compute p
+    
+    const forwardDifference = (i: number) => {
+      if (i === 0) return (data[1].y - data[0].y) / h; // Forward difference for the first interval
+      if (i === 1) return (data[2].y - data[1].y) / h; // Forward difference for the second interval
+      return 0;
+    };
 
-    for (let j = 1; j < n; j++) {
-      for (let i = 0; i < n - j; i++) {
-        table[i].push(table[i + 1][j - 1] - table[i][j - 1]);
-      }
-    }
-    return table;
-  };
+    // Estimating the first derivative using Newton's Forward Difference Formula
+    let result = forwardDifference(0) + p * forwardDifference(1);
 
-  // Function to compute interpolation using Newton's Forward Difference Formula
-  const newtonForwardInterpolation = (data: { x: number; y: number }[], xTarget: number) => {
-    const n = data.length;
-    const h = data[1].x - data[0].x;
-    const p = (xTarget - data[0].x) / h;
-    const table = generateDifferenceTable(data);
-    let result = table[0][0];
-    let factorial = 1;
-    let pProduct = 1;
-
-    for (let i = 1; i < n; i++) {
-      pProduct *= (p - (i - 1));
-      factorial *= i;
-      result += (pProduct / factorial) * table[0][i];
-    }
-
-    setDifferenceTable(table);
     return result;
   };
 
   // Handle Calculation
   const handleCalculate = () => {
-    const result = newtonForwardInterpolation(points, xTarget);
+    const result = newtonForwardDifference(points, xTarget);
     setEstimatedValue(result);
   };
 
   return (
     <Box>
       <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
-        Task 6: Newton’s Forward Interpolation
+        Task 6: First Derivative Using Newton’s Forward Difference Formula
       </Typography>
 
       {/* Math Formula */}
-      <BlockMath math="f(x) = y_0 + p \Delta y_0 + \frac{p(p-1)}{2!} \Delta^2 y_0 + \dots" />
+      <BlockMath math="f'(x) = \frac{y_1 - y_0}{h} + p \cdot \frac{y_2 - y_1}{h}" />
 
       {/* Data Points Input */}
       <Typography variant="h6" sx={{ mt: 3 }}>
@@ -121,39 +104,19 @@ const Task6 = () => {
 
       {/* Calculate Button */}
       <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
-        Compute Interpolation
+        Compute Derivative
       </Button>
 
       {/* Results */}
       {estimatedValue !== null && (
         <Card sx={{ mt: 4, p: 3 }}>
           <CardContent>
-            <Typography variant="h6">Estimated Value:</Typography>
+            <Typography variant="h6">Estimated Derivative:</Typography>
             <Typography>
-              f({xTarget}) = {estimatedValue.toFixed(4)}
+              f'({xTarget}) = {estimatedValue.toFixed(4)}
             </Typography>
           </CardContent>
         </Card>
-      )}
-
-      {/* Difference Table */}
-      {differenceTable !== null && (
-        <Box sx={{ mt: 6 }}>
-          <Typography variant="h6">Forward Difference Table</Typography>
-          <table style={{ borderCollapse: "collapse", border: "1px solid gray" }}>
-            <tbody>
-              {differenceTable.map((row, i) => (
-                <tr key={i}>
-                  {row.map((val, j) => (
-                    <td key={j} style={{ border: "1px solid gray", padding: "5px" }}>
-                      {val.toFixed(4)}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </Box>
       )}
 
       {/* Graph Visualization */}
