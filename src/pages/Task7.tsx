@@ -1,5 +1,13 @@
 import { useState } from "react";
 import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import {
   LineChart,
   Line,
   XAxis,
@@ -8,6 +16,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task7 = () => {
   const [xStart, setXStart] = useState(0);
@@ -42,63 +52,65 @@ const Task7 = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 7: Taylor Series Method</h2>
-      <p className="mb-6">Use Taylor Series up to the 3rd derivative to approximate \( y(x) \).</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 7: Taylor Series Method
+      </Typography>
+
+      {/* Math Formula */}
+      <BlockMath math="y(x) = y_0 + h f(x_0, y_0) + \frac{h^2}{2!} f'(x_0, y_0) + \frac{h^3}{3!} f''(x_0, y_0)" />
 
       {/* Initial Conditions */}
-      <div className="mb-4 flex space-x-4">
-        <label className="text-lg">
-          \( x_0 \):
-          <input
-            type="number"
-            value={xStart}
-            onChange={(e) => setXStart(parseFloat(e.target.value))}
-            className="ml-2 border p-2 w-16"
-          />
-        </label>
-        <label className="text-lg">
-          \( y_0 \):
-          <input
-            type="number"
-            value={yStart}
-            onChange={(e) => setYStart(parseFloat(e.target.value))}
-            className="ml-2 border p-2 w-16"
-          />
-        </label>
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>
+        Enter Initial Conditions
+      </Typography>
+      <Box sx={{ display: "flex", gap: 2, mt: 1 }}>
+        <TextField
+          label="x₀"
+          type="number"
+          value={xStart}
+          onChange={(e) => setXStart(parseFloat(e.target.value))}
+          sx={{ width: 120 }}
+        />
+        <TextField
+          label="y₀"
+          type="number"
+          value={yStart}
+          onChange={(e) => setYStart(parseFloat(e.target.value))}
+          sx={{ width: 120 }}
+        />
+      </Box>
 
       {/* Target X Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Target x-value</h3>
-        <input
-          type="number"
-          value={xTarget}
-          onChange={(e) => setXTarget(parseFloat(e.target.value))}
-          className="border p-2 w-16 text-center"
-        />
-      </div>
+      <TextField
+        label="Target x-value"
+        type="number"
+        value={xTarget}
+        onChange={(e) => setXTarget(parseFloat(e.target.value))}
+        sx={{ mt: 2, width: 150 }}
+      />
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
         Compute Approximation
-      </button>
+      </Button>
 
       {/* Results */}
       {estimatedValue !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Estimated Value:</p>
-          <p className="text-blue-600">y({xTarget}) = {estimatedValue.toFixed(4)}</p>
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Estimated Value:</Typography>
+            <Typography>
+              y({xTarget}) = {estimatedValue.toFixed(4)}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
 
       {/* Graph Visualization */}
       {taylorData.length > 0 && (
-        <div className="mt-6 w-full">
-          <h3 className="text-lg font-bold">Taylor Series Approximation</h3>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Taylor Series Approximation</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={taylorData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -108,9 +120,9 @@ const Task7 = () => {
               <Line type="monotone" dataKey="y" stroke="#FF5733" strokeWidth={2} />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

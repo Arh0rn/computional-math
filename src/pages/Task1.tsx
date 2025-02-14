@@ -1,22 +1,35 @@
 import { useState } from "react";
+import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
-import { evaluate } from "mathjs";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task1 = () => {
-  // Generate data points for f(x) = cos(x) - x in [0,1]
-  const generateData = () => {
-    return Array.from({ length: 100 }, (_, i) => {
-      const x = (i / 100) * 1; // Scale x to [0,1]
-      return { x, y: Math.cos(x) - x };
-    });
-  };
-
-  const [data, setData] = useState(generateData());
   const [method, setMethod] = useState("newton"); // Default: Newton-Raphson
   const [initialGuess, setInitialGuess] = useState(0.5);
   const [numericalRoot, setNumericalRoot] = useState<number | null>(null);
   const [absoluteError, setAbsoluteError] = useState<number | null>(null);
   const [visualRoot] = useState(0.739); // Approximate root from graph
+  const [data, setData] = useState<{ x: number; y: number }[]>([]);
+
+  // Function to generate dynamic graph data
+  const generateData = (min: number, max: number) => {
+    return Array.from({ length: 100 }, (_, i) => {
+      const x = min + (i / 100) * (max - min);
+      return { x, y: Math.cos(x) - x };
+    });
+  };
 
   // Newton-Raphson method
   const newtonRaphsonMethod = (guess: number, tolerance: number = 1e-6, maxIterations: number = 100) => {
@@ -51,8 +64,10 @@ const Task1 = () => {
     return (a + b) / 2;
   };
 
-  // Handle calculation
+  // Handle calculation and update graph
   const handleCalculate = () => {
+    setData(generateData(0, 1)); // Regenerate graph data when calculating
+
     let root = method === "newton" ? newtonRaphsonMethod(initialGuess) : bisectionMethod(0, 1);
     if (root !== null) {
       setNumericalRoot(root);
@@ -61,36 +76,38 @@ const Task1 = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 1: Graphical Method and Absolute Error</h2>
-      <p className="mb-6">Plot the function f(x) = cos(x) - x and find its root.</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 1: Graphical Method and Absolute Error
+      </Typography>
+
+      <Typography variant="body1" color="textSecondary" sx={{ mb: 3 }}>
+        Plot the function and find its root using numerical methods.
+      </Typography>
+
+      {/* Math formula rendered with KaTeX */}
+      <BlockMath math="f(x) = \cos(x) - x" />
 
       {/* Method Selection */}
-      <div className="flex space-x-4 mb-4">
-        <label className="text-lg">
-          Root-Finding Method:
-          <select
-            value={method}
-            onChange={(e) => setMethod(e.target.value)}
-            className="ml-2 border p-2 rounded"
-          >
-            <option value="newton">Newton-Raphson</option>
-            <option value="bisection">Bisection Method</option>
-          </select>
-        </label>
+      <Box display="flex" gap={2} alignItems="center" sx={{ mb: 3 }}>
+        <FormControl>
+          <InputLabel>Root-Finding Method</InputLabel>
+          <Select value={method} onChange={(e) => setMethod(e.target.value)} sx={{ minWidth: 200 }}>
+            <MenuItem value="newton">Newton-Raphson</MenuItem>
+            <MenuItem value="bisection">Bisection Method</MenuItem>
+          </Select>
+        </FormControl>
 
         {method === "newton" && (
-          <label className="text-lg">
-            Initial Guess:
-            <input
-              type="number"
-              value={initialGuess}
-              onChange={(e) => setInitialGuess(parseFloat(e.target.value))}
-              className="ml-2 border p-2 rounded w-16"
-            />
-          </label>
+          <TextField
+            label="Initial Guess"
+            type="number"
+            value={initialGuess}
+            onChange={(e) => setInitialGuess(parseFloat(e.target.value))}
+            sx={{ width: 120 }}
+          />
         )}
-      </div>
+      </Box>
 
       {/* Graph */}
       <ResponsiveContainer width="100%" height={400}>
@@ -99,27 +116,30 @@ const Task1 = () => {
           <XAxis dataKey="x" label={{ value: "x", position: "insideBottomRight", offset: -5 }} />
           <YAxis label={{ value: "f(x)", angle: -90, position: "insideLeft" }} />
           <Tooltip />
-          <Line type="monotone" dataKey="y" stroke="#8884d8" strokeWidth={2} />
+          <Line type="monotone" dataKey="y" stroke="#1976d2" strokeWidth={2} />
         </LineChart>
       </ResponsiveContainer>
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
-        Calculate Root and Error
-      </button>
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
+        Calculate Root and Update Graph
+      </Button>
 
       {/* Results */}
       {numericalRoot !== null && absoluteError !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Results:</p>
-          <p>Numerical Root: <span className="text-blue-600 font-semibold">{numericalRoot.toFixed(6)}</span></p>
-          <p>Absolute Error: <span className="text-red-500 font-semibold">{absoluteError.toExponential(3)}</span></p>
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Results</Typography>
+            <Typography>
+              <strong>Numerical Root:</strong> {numericalRoot.toFixed(6)}
+            </Typography>
+            <Typography>
+              <strong>Absolute Error:</strong> {absoluteError.toExponential(3)}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
-    </div>
+    </Box>
   );
 };
 

@@ -1,15 +1,23 @@
 import { useState } from "react";
 import {
-  LineChart,
-  Line,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import {
+  ScatterChart,
+  Scatter,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  ScatterChart,
-  Scatter,
 } from "recharts";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task6 = () => {
   // Default Data Points
@@ -63,88 +71,95 @@ const Task6 = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 6: Newton’s Forward Interpolation</h2>
-      <p className="mb-6">Estimate \( f(x) \) using Newton’s Forward Difference Formula.</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 6: Newton’s Forward Interpolation
+      </Typography>
+
+      {/* Math Formula */}
+      <BlockMath math="f(x) = y_0 + p \Delta y_0 + \frac{p(p-1)}{2!} \Delta^2 y_0 + \dots" />
 
       {/* Data Points Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Data Points (x, y)</h3>
-        {points.map((point, i) => (
-          <div key={i} className="flex space-x-2">
-            <input
-              type="number"
-              value={point.x}
-              onChange={(e) => {
-                const newPoints = [...points];
-                newPoints[i].x = parseFloat(e.target.value);
-                setPoints(newPoints);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-            <input
-              type="number"
-              value={point.y}
-              onChange={(e) => {
-                const newPoints = [...points];
-                newPoints[i].y = parseFloat(e.target.value);
-                setPoints(newPoints);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-          </div>
-        ))}
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>
+        Enter Data Points (x, y)
+      </Typography>
+      {points.map((point, i) => (
+        <Box key={i} sx={{ display: "flex", gap: 2, mb: 1 }}>
+          <TextField
+            type="number"
+            label={`x${i + 1}`}
+            value={point.x}
+            onChange={(e) => {
+              const newPoints = [...points];
+              newPoints[i].x = parseFloat(e.target.value);
+              setPoints(newPoints);
+            }}
+            sx={{ width: 80 }}
+          />
+          <TextField
+            type="number"
+            label={`y${i + 1}`}
+            value={point.y}
+            onChange={(e) => {
+              const newPoints = [...points];
+              newPoints[i].y = parseFloat(e.target.value);
+              setPoints(newPoints);
+            }}
+            sx={{ width: 80 }}
+          />
+        </Box>
+      ))}
 
       {/* Target X Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Target x-value</h3>
-        <input
-          type="number"
-          value={xTarget}
-          onChange={(e) => setXTarget(parseFloat(e.target.value))}
-          className="border p-2 w-16 text-center"
-        />
-      </div>
+      <TextField
+        label="Target x-value"
+        type="number"
+        value={xTarget}
+        onChange={(e) => setXTarget(parseFloat(e.target.value))}
+        sx={{ mt: 2, width: 150 }}
+      />
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
         Compute Interpolation
-      </button>
+      </Button>
 
       {/* Results */}
       {estimatedValue !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Estimated Value:</p>
-          <p className="text-blue-600">f({xTarget}) = {estimatedValue.toFixed(4)}</p>
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Estimated Value:</Typography>
+            <Typography>
+              f({xTarget}) = {estimatedValue.toFixed(4)}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
 
       {/* Difference Table */}
       {differenceTable !== null && (
-        <div className="mt-6">
-          <h3 className="text-lg font-bold">Forward Difference Table</h3>
-          <table className="border-collapse border border-gray-400">
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Forward Difference Table</Typography>
+          <table style={{ borderCollapse: "collapse", border: "1px solid gray" }}>
             <tbody>
               {differenceTable.map((row, i) => (
                 <tr key={i}>
                   {row.map((val, j) => (
-                    <td key={j} className="border p-2">{val.toFixed(4)}</td>
+                    <td key={j} style={{ border: "1px solid gray", padding: "5px" }}>
+                      {val.toFixed(4)}
+                    </td>
                   ))}
                 </tr>
               ))}
             </tbody>
           </table>
-        </div>
+        </Box>
       )}
 
       {/* Graph Visualization */}
       {estimatedValue !== null && (
-        <div className="mt-6 w-full">
-          <h3 className="text-lg font-bold">Data Points and Estimated Value</h3>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Data Points and Estimated Value</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <ScatterChart>
               <CartesianGrid strokeDasharray="3 3" />
@@ -155,9 +170,9 @@ const Task6 = () => {
               <Scatter name="Estimated Point" data={[{ x: xTarget, y: estimatedValue }]} fill="blue" />
             </ScatterChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

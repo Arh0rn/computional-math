@@ -1,5 +1,13 @@
 import { useState } from "react";
 import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import {
   ScatterChart,
   Scatter,
   XAxis,
@@ -9,6 +17,8 @@ import {
   ResponsiveContainer,
   Line,
 } from "recharts";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task5 = () => {
   // Default Data Points
@@ -48,61 +58,66 @@ const Task5 = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 5: Linear Curve Fitting</h2>
-      <p className="mb-6">Fit a line to data points using the Least Squares Method.</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 5: Linear Curve Fitting
+      </Typography>
+
+      {/* Math Formula Display */}
+      <BlockMath math="y = ax + b" />
 
       {/* Data Points Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Data Points (x, y)</h3>
-        {points.map((point, i) => (
-          <div key={i} className="flex space-x-2">
-            <input
-              type="number"
-              value={point.x}
-              onChange={(e) => {
-                const newPoints = [...points];
-                newPoints[i].x = parseFloat(e.target.value);
-                setPoints(newPoints);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-            <input
-              type="number"
-              value={point.y}
-              onChange={(e) => {
-                const newPoints = [...points];
-                newPoints[i].y = parseFloat(e.target.value);
-                setPoints(newPoints);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-          </div>
-        ))}
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>
+        Enter Data Points (x, y)
+      </Typography>
+      {points.map((point, i) => (
+        <Box key={i} sx={{ display: "flex", gap: 2, mb: 1 }}>
+          <TextField
+            type="number"
+            label={`x${i + 1}`}
+            value={point.x}
+            onChange={(e) => {
+              const newPoints = [...points];
+              newPoints[i].x = parseFloat(e.target.value);
+              setPoints(newPoints);
+            }}
+            sx={{ width: 80 }}
+          />
+          <TextField
+            type="number"
+            label={`y${i + 1}`}
+            value={point.y}
+            onChange={(e) => {
+              const newPoints = [...points];
+              newPoints[i].y = parseFloat(e.target.value);
+              setPoints(newPoints);
+            }}
+            sx={{ width: 80 }}
+          />
+        </Box>
+      ))}
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
         Compute Best-Fit Line
-      </button>
+      </Button>
 
       {/* Results */}
       {lineEquation !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Best-Fit Line Equation:</p>
-          <p className="text-blue-600">
-            y = {lineEquation.a.toFixed(4)}x + {lineEquation.b.toFixed(4)}
-          </p>
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Best-Fit Line Equation:</Typography>
+            <Typography>
+              y = {lineEquation.a.toFixed(4)}x + {lineEquation.b.toFixed(4)}
+            </Typography>
+          </CardContent>
+        </Card>
       )}
 
       {/* Graph Visualization */}
       {fittedLine.length > 0 && (
-        <div className="mt-6 w-full">
-          <h3 className="text-lg font-bold">Data Points and Best-Fit Line</h3>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Data Points and Best-Fit Line</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <ScatterChart>
               <CartesianGrid strokeDasharray="3 3" />
@@ -113,9 +128,9 @@ const Task5 = () => {
               <Line type="linear" dataKey="y" data={fittedLine} stroke="blue" />
             </ScatterChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

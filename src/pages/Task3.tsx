@@ -1,13 +1,17 @@
 import { useState } from "react";
 import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+  Box,
+  Button,
+  Card,
+  CardContent,
+  FormControl,
+  InputLabel,
+  TextField,
+  Typography,
+} from "@mui/material";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task3 = () => {
   // Default system of equations
@@ -64,92 +68,89 @@ const Task3 = () => {
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 3: Jacobi Method</h2>
-      <p className="mb-6">Solve the system of equations using the Jacobi Iterative Method.</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 3: Jacobi Method
+      </Typography>
+
+      {/* Math Formula Display */}
+      <BlockMath math="\begin{cases} x + y + z = 6 \\ 0y + 2z = -4 \\ 2x + 3y + z = 27 \end{cases}" />
 
       {/* Coefficient Matrix Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Coefficient Matrix (A)</h3>
-        {A.map((row, i) => (
-          <div key={i} className="flex space-x-2">
-            {row.map((val, j) => (
-              <input
-                key={j}
-                type="number"
-                value={A[i][j]}
-                onChange={(e) => {
-                  const newA = [...A];
-                  newA[i][j] = parseFloat(e.target.value);
-                  setA(newA);
-                }}
-                className="border p-2 w-16 text-center"
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>Coefficient Matrix (A)</Typography>
+      {A.map((row, i) => (
+        <Box key={i} sx={{ display: "flex", gap: 2, mb: 1 }}>
+          {row.map((val, j) => (
+            <TextField
+              key={j}
+              type="number"
+              value={A[i][j]}
+              onChange={(e) => {
+                const newA = [...A];
+                newA[i][j] = parseFloat(e.target.value);
+                setA(newA);
+              }}
+              sx={{ width: 80 }}
+            />
+          ))}
+        </Box>
+      ))}
 
       {/* Constants Vector Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Constants (B)</h3>
-        <div className="flex space-x-2">
-          {B.map((val, i) => (
-            <input
-              key={i}
-              type="number"
-              value={B[i]}
-              onChange={(e) => {
-                const newB = [...B];
-                newB[i] = parseFloat(e.target.value);
-                setB(newB);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-          ))}
-        </div>
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>Constants (B)</Typography>
+      <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+        {B.map((val, i) => (
+          <TextField
+            key={i}
+            type="number"
+            value={B[i]}
+            onChange={(e) => {
+              const newB = [...B];
+              newB[i] = parseFloat(e.target.value);
+              setB(newB);
+            }}
+            sx={{ width: 80 }}
+          />
+        ))}
+      </Box>
 
       {/* Initial Guess Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Initial Guess (x₀)</h3>
-        <div className="flex space-x-2">
-          {initialGuess.map((val, i) => (
-            <input
-              key={i}
-              type="number"
-              value={initialGuess[i]}
-              onChange={(e) => {
-                const newGuess = [...initialGuess];
-                newGuess[i] = parseFloat(e.target.value);
-                setInitialGuess(newGuess);
-              }}
-              className="border p-2 w-16 text-center"
-            />
-          ))}
-        </div>
-      </div>
+      <Typography variant="h6">Initial Guess (x₀)</Typography>
+      <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+        {initialGuess.map((val, i) => (
+          <TextField
+            key={i}
+            type="number"
+            value={initialGuess[i]}
+            onChange={(e) => {
+              const newGuess = [...initialGuess];
+              newGuess[i] = parseFloat(e.target.value);
+              setInitialGuess(newGuess);
+            }}
+            sx={{ width: 80 }}
+          />
+        ))}
+      </Box>
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
         Solve System
-      </button>
+      </Button>
 
       {/* Results */}
       {solution !== null && iterations !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Solution (after {iterations} iterations):</p>
-          <p>X = [{solution.map((x) => x.toFixed(6)).join(", ")}]</p>
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Solution (after {iterations} iterations):</Typography>
+            <Typography>X = [{solution.map((x) => x.toFixed(6)).join(", ")}]</Typography>
+          </CardContent>
+        </Card>
       )}
 
       {/* Graph Visualization */}
       {convergenceData.length > 0 && (
-        <div className="mt-6 w-full">
-          <h3 className="text-lg font-bold">Convergence of Variables</h3>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Convergence of Variables</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={convergenceData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -161,9 +162,9 @@ const Task3 = () => {
               <Line type="monotone" dataKey="x3" stroke="#0000FF" strokeWidth={2} name="x3" />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

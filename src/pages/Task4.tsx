@@ -1,5 +1,13 @@
 import { useState } from "react";
 import {
+  Box,
+  Button,
+  Card,
+  CardContent,
+  TextField,
+  Typography,
+} from "@mui/material";
+import {
   LineChart,
   Line,
   XAxis,
@@ -8,6 +16,8 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import { BlockMath } from "react-katex";
+import "katex/dist/katex.min.css"; // Import KaTeX styles
 
 const Task4 = () => {
   // Default Matrix A
@@ -80,62 +90,66 @@ const Task4 = () => {
 
   // Handle Calculation
   const handleCalculate = () => {
+    setConvergenceData([]); // Reset previous convergence data
     const result = iterativeMatrixInversion(A);
     setInverseMatrix(result.inverse);
     setIterations(result.iterations);
   };
 
   return (
-    <div className="p-6 flex flex-col items-center">
-      <h2 className="text-2xl font-bold mb-4">Task 4: Iterative Matrix Inversion</h2>
-      <p className="mb-6">Compute the inverse of a matrix using an iterative method.</p>
+    <Box>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Task 4: Iterative Matrix Inversion
+      </Typography>
+
+      {/* Math Formula Display */}
+      <BlockMath math="A = \begin{bmatrix} 5 & -3 & 2 \\ -3 & 9 & -1 \\ 2 & -1 & 7 \end{bmatrix}" />
 
       {/* Matrix Input */}
-      <div className="mb-4">
-        <h3 className="text-lg font-semibold">Matrix (A)</h3>
-        {A.map((row, i) => (
-          <div key={i} className="flex space-x-2">
-            {row.map((val, j) => (
-              <input
-                key={j}
-                type="number"
-                value={A[i][j]}
-                onChange={(e) => {
-                  const newA = [...A];
-                  newA[i][j] = parseFloat(e.target.value);
-                  setA(newA);
-                }}
-                className="border p-2 w-16 text-center"
-              />
-            ))}
-          </div>
-        ))}
-      </div>
+      <Typography variant="h6" sx={{ mt: 3 }}>
+        Enter Matrix (A)
+      </Typography>
+      {A.map((row, i) => (
+        <Box key={i} sx={{ display: "flex", gap: 2, mb: 1 }}>
+          {row.map((val, j) => (
+            <TextField
+              key={j}
+              type="number"
+              value={A[i][j]}
+              onChange={(e) => {
+                const newA = [...A];
+                newA[i][j] = parseFloat(e.target.value);
+                setA(newA);
+              }}
+              sx={{ width: 80 }}
+            />
+          ))}
+        </Box>
+      ))}
 
       {/* Calculate Button */}
-      <button
-        onClick={handleCalculate}
-        className="mt-6 px-6 py-3 bg-green-500 text-white rounded-lg shadow-md hover:bg-green-700 transition"
-      >
+      <Button variant="contained" color="primary" onClick={handleCalculate} sx={{ mt: 3 }}>
         Compute Inverse
-      </button>
+      </Button>
 
       {/* Results */}
       {inverseMatrix !== null && iterations !== null && (
-        <div className="mt-4 p-4 bg-gray-100 rounded-lg shadow-md">
-          <p className="text-lg font-bold">Inverse Matrix (after {iterations} iterations):</p>
-          {inverseMatrix.map((row, i) => (
-            <p key={i} className="text-blue-600">
-              [{row.map((x) => x.toFixed(6)).join(", ")}]
-            </p>
-          ))}
-        </div>
+        <Card sx={{ mt: 4, p: 3 }}>
+          <CardContent>
+            <Typography variant="h6">Inverse Matrix (after {iterations} iterations):</Typography>
+            {inverseMatrix.map((row, i) => (
+              <Typography key={i} sx={{ fontFamily: "monospace", fontSize: "16px" }}>
+                [{row.map((x) => x.toFixed(6)).join(", ")}]
+              </Typography>
+            ))}
+          </CardContent>
+        </Card>
       )}
 
       {/* Graph Visualization */}
       {convergenceData.length > 0 && (
-        <div className="mt-6 w-full">
-          <h3 className="text-lg font-bold">Convergence of Error</h3>
+        <Box sx={{ mt: 6 }}>
+          <Typography variant="h6">Convergence of Error</Typography>
           <ResponsiveContainer width="100%" height={400}>
             <LineChart data={convergenceData}>
               <CartesianGrid strokeDasharray="3 3" />
@@ -145,9 +159,9 @@ const Task4 = () => {
               <Line type="monotone" dataKey="error" stroke="#FF0000" strokeWidth={2} name="Error" />
             </LineChart>
           </ResponsiveContainer>
-        </div>
+        </Box>
       )}
-    </div>
+    </Box>
   );
 };
 

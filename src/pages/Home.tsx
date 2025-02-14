@@ -1,22 +1,32 @@
+import { Box, Button, Typography } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Home = () => {
+export default function Home() {
   return (
-    <div className="flex flex-col items-center p-10">
-      <h1 className="text-3xl font-bold mb-6">Computational Mathematics</h1>
-      <div className="grid grid-cols-2 gap-4">
-        {Array.from({ length: 8 }, (_, i) => (
-          <Link
-            key={i}
-            to={`/task${i + 1}`}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg shadow-md hover:bg-blue-700 transition"
-          >
-            Task {i + 1}
-          </Link>
-        ))}
-      </div>
-    </div>
+    <>
+      <Typography variant="h4" color="primary" sx={{ mb: 2 }}>
+        Computational Mathematics App
+      </Typography>
+      <Typography variant="body1" color="textSecondary" paragraph>
+        Interactive tools for solving computational math problems.
+      </Typography>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "1fr 1fr",
+          gap: 2,
+          mt: 3,
+        }}
+      >
+        <Link to="/task1"><Button variant="contained" fullWidth>Task 1: Graphical Method</Button></Link>
+        <Link to="/task2"><Button variant="contained" fullWidth>Task 2: Root-Finding</Button></Link>
+        <Link to="/task3"><Button variant="contained" fullWidth>Task 3: Jacobi Method</Button></Link>
+        <Link to="/task4"><Button variant="contained" fullWidth>Task 4: Matrix Inversion</Button></Link>
+        <Link to="/task5"><Button variant="contained" fullWidth>Task 5: Linear Curve Fitting</Button></Link>
+        <Link to="/task6"><Button variant="contained" fullWidth>Task 6: Newton’s Forward Diff.</Button></Link>
+        <Link to="/task7"><Button variant="contained" fullWidth>Task 7: Taylor Series</Button></Link>
+        <Link to="/task8"><Button variant="contained" fullWidth>Task 8: Simpson’s 3/8 Rule</Button></Link>
+      </Box>
+    </>
   );
-};
-
-export default Home;
+}
