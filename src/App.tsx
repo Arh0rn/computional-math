@@ -1,5 +1,4 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
 import Task1 from "./pages/Task1";
 import Task2 from "./pages/Task2";
 import Task3 from "./pages/Task3";
@@ -11,33 +10,20 @@ import Task8 from "./pages/Task8";
 
 function Home() {
   return (
-    <div className="flex flex-col items-center p-10 space-y-4">
-      <h1 className="text-2xl font-bold">Computational Mathematics</h1>
-      <div className="grid grid-cols-2 gap-4">
-        <Link to="/task1">
-          <Button>Task 1: Graphical Method</Button>
-        </Link>
-        <Link to="/task2">
-          <Button>Task 2: Root-Finding</Button>
-        </Link>
-        <Link to="/task3">
-          <Button>Task 3: Jacobi Method</Button>
-        </Link>
-        <Link to="/task4">
-          <Button>Task 4: Matrix Inversion</Button>
-        </Link>
-        <Link to="/task5">
-          <Button>Task 5: Linear Curve Fitting</Button>
-        </Link>
-        <Link to="/task6">
-          <Button>Task 6: Newton’s Forward Diff.</Button>
-        </Link>
-        <Link to="/task7">
-          <Button>Task 7: Taylor Series</Button>
-        </Link>
-        <Link to="/task8">
-          <Button>Task 8: Simpson’s 3/8 Rule</Button>
-        </Link>
+    <div className="container">
+      <h1>Computational Mathematics</h1>
+      <div className="card">
+        <p>Interactive tools for solving computational math problems.</p>
+        <div className="button-group">
+          <Link to="/task1"><button>Task 1: Graphical Method</button></Link>
+          <Link to="/task2"><button>Task 2: Root-Finding</button></Link>
+          <Link to="/task3"><button>Task 3: Jacobi Method</button></Link>
+          <Link to="/task4"><button>Task 4: Matrix Inversion</button></Link>
+          <Link to="/task5"><button>Task 5: Linear Curve Fitting</button></Link>
+          <Link to="/task6"><button>Task 6: Newton’s Forward Diff.</button></Link>
+          <Link to="/task7"><button>Task 7: Taylor Series</button></Link>
+          <Link to="/task8"><button>Task 8: Simpson’s 3/8 Rule</button></Link>
+        </div>
       </div>
     </div>
   );
@@ -55,7 +41,7 @@ export default function App() {
         <Route path="/task5" element={<Task5 />} />
         <Route path="/task6" element={<Task6 />} />
         <Route path="/task7" element={<Task7 />} />
-        <Route path="/task8" element={<Task8 />} />
+        <Route path="/task8" element={<Task8 />} /> 
       </Routes>
     </Router>
   );
