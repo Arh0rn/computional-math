@@ -28,8 +28,8 @@ const Task8 = () => {
   const [error, setError] = useState<number | null>(null);
   const [plotData, setPlotData] = useState<any[]>([]);
 
-  // Function to compute f(x) = 2x^3
-  const f = (x: number) => 2 * x ** 3;
+  // Function to compute f(x) = x^3
+  const f = (x: number) =>  x ** 3;
 
   // Function to compute exact integral using symbolic integration
   const computeExactIntegral = (a: number, b: number) => {
@@ -75,7 +75,7 @@ const Task8 = () => {
       </Typography>
 
       {/* Math Formula */}
-      <BlockMath math="\int_2^5 2x^3 \, dx \approx \frac{3h}{8} \left[ f(a) + 3 \sum f(x_i) + 3 \sum f(x_j) + f(b) \right]" />
+      <BlockMath math="\int_2^5 x^3 \, dx \approx \frac{3h}{8} \left[ f(a) + 3 \sum f(x_i) + 3 \sum f(x_j) + f(b) \right]" />
 
       {/* Input Fields */}
       <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
